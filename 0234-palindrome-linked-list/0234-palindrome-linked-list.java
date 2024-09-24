@@ -10,24 +10,45 @@
  */
 class Solution {
     public boolean isPalindrome(ListNode head) {
+    
+        if (head == null || head.next == null) return true;
 
-        List<Integer> values = new ArrayList<>();
-        ListNode currentNode = head;
-        while (currentNode != null) {
-            values.add(currentNode.val);
-            currentNode = currentNode.next;
+        // Step 1: Find the middle of the linked list
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
         }
 
-        // Step 2: Check if the list of values is a palindrome
-        int start = 0, end = values.size() - 1;
-        while (start < end) {
-            if (!values.get(start).equals(values.get(end))) {
-                return false;  // Not a palindrome
+        // Step 2: Reverse the second half of the list
+        ListNode secondHalf = reverseList(slow);
+
+        // Step 3: Compare the first half and the reversed second half
+        ListNode firstHalf = head;
+        ListNode secondHalfCopy = secondHalf; // To restore later
+        while (secondHalf != null) {
+            if (firstHalf.val != secondHalf.val) {
+                return false;
             }
-            start++;
-            end--;
+            firstHalf = firstHalf.next;
+            secondHalf = secondHalf.next;
         }
 
-        return true;  // It's a palindrome
+        // Optional Step 4: Restore the second half to its original state
+        reverseList(secondHalfCopy);
+
+        return true;
+    }
+
+    // Helper function to reverse a linked list
+    private ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        while (head != null) {
+            ListNode nextNode = head.next;
+            head.next = prev;
+            prev = head;
+            head = nextNode;
+        }
+        return prev;
     }
 }
