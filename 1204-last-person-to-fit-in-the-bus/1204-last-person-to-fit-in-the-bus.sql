@@ -1,2 +1,13 @@
 # Write your MySQL query statement below
-select q1.person_name from Queue q1 join Queue q2 on q1.Turn >= q2.Turn group by q1.turn having sum(q2.weight) <= 1000 order by sum(q2.weight) desc limit 1;
+
+with main as (
+    select *, 
+           sum(weight) over (order by turn rows unbounded preceding) as cur_wt,
+           lead(weight, 1) over (order by turn) as next_wt
+    from queue      
+)
+
+select person_name
+from main
+where cur_wt <= 1000 
+      and (cur_wt + next_wt > 1000 or next_wt is null);
