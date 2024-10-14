@@ -3,22 +3,21 @@ class Solution {
         int n = nums.length;
         List<Integer> ls = new ArrayList<>(); 
         
-        for(int i=0; i<n; i++){
+        HashMap<Integer, Integer> mpp = new HashMap<>();
+        
+        int mini = (int)(n/3)+1;
+        
+        for(int i=0;i<n;i++){
+            int value = mpp.getOrDefault(nums[i], 0);
+            mpp.put(nums[i], value+1);
             
-            if(ls.size()==0 || ls.get(0)!=nums[i]){
-                int cnt=0;
-                for(int j=0; j<n; j++){
-                    if(nums[j]==nums[i]){
-                        cnt++;
-                    }
-               }  
-            if(cnt > (n/3))
-                ls.add(nums[i]);
-            
-            if(ls.size()==2) break;
+            if(mpp.get(nums[i])==mini){
+               ls.add(nums[i]);
             }
+            if(ls.size()==2)  break;
         }
-     return ls;
+        
+        return ls;
    }
         
 }
